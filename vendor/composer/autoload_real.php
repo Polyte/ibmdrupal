@@ -74,4 +74,6 @@ function composerRequired2fff4173ba7d8fe15894f365743a01e($fileIdentifier, $file)
     if (empty($GLOBALS['__composer_autoload_files'][$fileIdentifier])) {
         require $file;
 
-        $GLOBALS['__composer_autoload_files'][$file
+        $GLOBALS['__composer_autoload_files'][$fileIdentifier] = true;
+    }
+}

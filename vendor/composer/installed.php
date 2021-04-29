@@ -1721,4 +1721,9 @@
     'zendframework/zend-stdlib' => 
     array (
       'replaced' => 
-      a
+      array (
+        0 => '^3.2.1',
+      ),
+    ),
+  ),
+);

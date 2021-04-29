@@ -1898,4 +1898,93 @@ throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed
 
 
 
-public static function getReference($packageNa
+public static function getReference($packageName)
+{
+foreach (self::getInstalled() as $installed) {
+if (!isset($installed['versions'][$packageName])) {
+continue;
+}
+
+if (!isset($installed['versions'][$packageName]['reference'])) {
+return null;
+}
+
+return $installed['versions'][$packageName]['reference'];
+}
+
+throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed');
+}
+
+
+
+
+
+public static function getRootPackage()
+{
+$installed = self::getInstalled();
+
+return $installed[0]['root'];
+}
+
+
+
+
+
+
+
+public static function getRawData()
+{
+return self::$installed;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public static function reload($data)
+{
+self::$installed = $data;
+self::$installedByVendor = array();
+}
+
+
+
+
+
+private static function getInstalled()
+{
+if (null === self::$canGetVendors) {
+self::$canGetVendors = method_exists('Composer\Autoload\ClassLoader', 'getRegisteredLoaders');
+}
+
+$installed = array();
+
+if (self::$canGetVendors) {
+foreach (ClassLoader::getRegisteredLoaders() as $vendorDir => $loader) {
+if (isset(self::$installedByVendor[$vendorDir])) {
+$installed[] = self::$installedByVendor[$vendorDir];
+} elseif (is_file($vendorDir.'/composer/installed.php')) {
+$installed[] = self::$installedByVendor[$vendorDir] = require $vendorDir.'/composer/installed.php';
+}
+}
+}
+
+$installed[] = self::$installed;
+
+return $installed;
+}
+}
